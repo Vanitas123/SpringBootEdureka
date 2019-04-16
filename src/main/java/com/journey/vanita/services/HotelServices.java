@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.journey.vanita.aop.TrackTime;
 import com.journey.vanita.controllers.HotelsController;
 import com.journey.vanita.customexceptions.BookingsFullException;
 import com.journey.vanita.model.Hotel;
@@ -34,6 +35,7 @@ public class HotelServices {
 	@Autowired
 	private HotelRatingRepository hotelRatingRepo;
 
+	@TrackTime
 	public List<Hotel> getAllHotels(int page, int limit) {
 
 		List<Hotel> hotels = new ArrayList<>();

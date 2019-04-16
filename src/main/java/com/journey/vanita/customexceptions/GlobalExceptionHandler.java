@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="Bookings exceeds available")
 	@ExceptionHandler(BookingsFullException.class)
 	public String handleIOException(BookingsFullException ex){
-		logger.debug("handling booing full exception");
+		//logger.debug("handling booing full exception");
 		return ex.getMessage();
 		
 	}
