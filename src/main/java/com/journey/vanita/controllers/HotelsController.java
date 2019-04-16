@@ -1,7 +1,6 @@
 package com.journey.vanita.controllers;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.validation.Valid;
 
@@ -15,14 +14,11 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.journey.vanita.model.Hotel;
@@ -56,7 +52,7 @@ public class HotelsController {
 		LOGGER.info("Getting all Hotels..");
 		List<Hotel> hotels = hotelService.getAllHotels(page, limit);
 		ResponseEntity<List<Hotel>> response = new ResponseEntity<>(hotels, HttpStatus.OK);
-		LOGGER.info("Getting all Hotels, size:"+hotels.size());
+		//LOGGER.info("Getting all Hotels, size:"+hotels.size());
 		return response;
 
 	}
@@ -84,13 +80,7 @@ public class HotelsController {
 	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="hotels/{hotelId}")
 	public ResponseEntity<Hotel> bookHotelRoom(@Valid @PathVariable int hotelId, @RequestBody Hotel hotel) {
 		ResponseEntity<Hotel> res = null;
-		/*Hotel fetchHotel = hotelService.findHotelById(hotelId);
-		if (fetchHotel.getTotalRooms() < (fetchHotel.getBooked() + hotel.getBooked())) {
-			throw new BookingsFullException(" No of bookings is greater than available rooms. Available rooms : "
-					+ (fetchHotel.getTotalRooms() - fetchHotel.getBooked()));
-		}
-		fetchHotel.setBooked(fetchHotel.getBooked() + hotel.getBooked());
-*/		Hotel savedHotel = hotelService.bookHotelRoom(hotelId, hotel);
+		Hotel savedHotel = hotelService.bookHotelRoom(hotelId, hotel);
 
 		if (savedHotel.getId() != 0) {
 			res = new ResponseEntity<>(savedHotel, HttpStatus.CREATED);
