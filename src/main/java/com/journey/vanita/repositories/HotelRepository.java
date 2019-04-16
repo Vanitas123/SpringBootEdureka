@@ -7,4 +7,5 @@ import com.journey.vanita.model.Hotel;
 
 public interface HotelRepository extends JpaRepository <Hotel, Integer> {
 
+	
 }
