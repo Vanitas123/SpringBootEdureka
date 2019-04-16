@@ -41,11 +41,9 @@ public class Hotel {
 	private String description;
 
 	@Column(name="totalrooms")
-	@JsonIgnore
 	private int totalRooms = 0;
 	
 	@Column(name="booked")
-	@JsonIgnore
 	private int booked = 0;
 
 	public int getTotalRooms() {

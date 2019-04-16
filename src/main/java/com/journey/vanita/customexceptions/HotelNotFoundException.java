@@ -1,6 +1,14 @@
 package com.journey.vanita.customexceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 public class HotelNotFoundException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3643506314877044425L;
 
 	public HotelNotFoundException() {
 	}

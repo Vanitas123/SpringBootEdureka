@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.journey.vanita.controllers.HotelsController;
+import com.journey.vanita.customexceptions.BookingsFullException;
 import com.journey.vanita.model.Hotel;
 import com.journey.vanita.model.HotelRating;
 import com.journey.vanita.repositories.HotelRatingRepository;
@@ -21,6 +26,8 @@ import com.journey.vanita.repositories.HotelRepository;
 @Transactional
 public class HotelServices {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HotelServices.class);
+	
 	@Autowired
 	private HotelRepository hotelRepo;
 
@@ -44,27 +51,25 @@ public class HotelServices {
 		return hotelRepo.findById(hotelId).get();
 	}
 
-	public Hotel bookHotelRoom(Hotel updatedHotel) {
-		return hotelRepo.save(updatedHotel);
+	public Hotel bookHotelRoom(@Valid int hotelId, Hotel hotel) throws BookingsFullException {
+		Hotel fetchHotel = hotelRepo.findById(hotelId)
+				.orElseThrow(() -> new NoSuchElementException("Hotel does not exist " + hotelId));
+		int availableRooms = fetchHotel.getTotalRooms() - fetchHotel.getBooked();
+		LOGGER.info("Available rooms in hotel "+fetchHotel.getHotelName()+" are "+availableRooms);
+		if (availableRooms < (hotel.getBooked())) {
+			throw new BookingsFullException(" No of bookings is greater than available rooms. Available rooms : "
+					+ availableRooms);
+		}
+		fetchHotel.setBooked(fetchHotel.getBooked() + hotel.getBooked());
+		return hotelRepo.save(fetchHotel);
 	}
 
-	/**
-	 * Get a page of hotel ratings for a tour.
-	 *
-	 * @param hotelId
-	 *            tour identifier
-	 * @param pageable
-	 *            page parameters to determine which elements to fetch
-	 * @return Page of TourRatings
-	 * @throws NoSuchElementException
-	 *             if no Tour found.
-	 */
 	public Page<HotelRating> lookupRatings(int hotelId, Pageable pageable) throws NoSuchElementException {
 		return hotelRatingRepo.findByHotelId(verifyHotel(hotelId).getId(), pageable);
 	}
 
-	private Hotel verifyHotel(int tourId) throws NoSuchElementException {
-		return hotelRepo.findById(tourId)
-				.orElseThrow(() -> new NoSuchElementException("Hotel does not exist " + tourId));
+	private Hotel verifyHotel(int hotelId) throws NoSuchElementException {
+		return hotelRepo.findById(hotelId)
+				.orElseThrow(() -> new NoSuchElementException("Hotel does not exist " + hotelId));
 	}
 }
